@@ -2,28 +2,36 @@ package diego.rayme.martinez.labfirebasecalificado;
 
 public class User {
 
-    private String uid;
+    private String id;
 
-    private String displayName;
+    private String nombre;
+
+    private String apellido;
 
     private String email;
 
-    private String photoUrl;
-
-    public String getUid() {
-        return uid;
+    public String getId() {
+        return id;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getDisplayName() {
-        return displayName;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
     }
 
     public String getEmail() {
@@ -34,21 +42,13 @@ public class User {
         this.email = email;
     }
 
-    public String getPhotoUrl() {
-        return photoUrl;
-    }
-
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
-    }
-
     @Override
     public String toString() {
         return "User{" +
-                "uid='" + uid + '\'' +
-                ", displayName='" + displayName + '\'' +
+                "id='" + id + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", apellido='" + apellido + '\'' +
                 ", email='" + email + '\'' +
-                ", photoUrl='" + photoUrl + '\'' +
                 '}';
     }
 }
