@@ -1,5 +1,6 @@
 package diego.rayme.martinez.labfirebasecalificado;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,9 +8,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,11 +24,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-
 
 
         // Obtain the FirebaseAnalytics instance.
@@ -35,9 +38,39 @@ public class MainActivity extends AppCompatActivity {
 
         mFirebaseAnalytics.setUserProperty("username", "dlopez");
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        Log.d(TAG, "user: " + user);
+        //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+       // Log.d(TAG, "user: " + user);
+
+        // Get currentuser from FirebaseAuth
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        Log.d(TAG, "currentUser: " + currentUser);
+
+
+
+        // Save/Update current user to Firebase Database
+        User user = new User();
+        user.setUid(currentUser.getUid());
+        user.setDisplayName(currentUser.getDisplayName());
+        user.setEmail(currentUser.getEmail());
+        user.setPhotoUrl((currentUser.getPhotoUrl()!=null?currentUser.getPhotoUrl().toString():null));
+        // user.setEtc...
+
+
+
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+        usersRef.child(user.getUid()).setValue(user)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            Log.d(TAG, "onSuccess");
+                        }else{
+                            Log.e(TAG, "onFailure", task.getException());
+                        }
+                    }
+                });
     }
+
 
 
     @Override
