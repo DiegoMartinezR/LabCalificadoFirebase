@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,10 +51,10 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         Bundle bundle = new Bundle();
-        bundle.putString("apellidos", "Erick Fernandez");
+        bundle.putString("apellidos", "Diego Martinez");
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
 
-        mFirebaseAnalytics.setUserProperty("nombres", "EFernandez");
+        mFirebaseAnalytics.setUserProperty("nombres", "dmartinez");
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         Log.d(TAG, "currentUser: " + currentUser);
@@ -78,75 +77,74 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Lista de post con RecyclerView
+
         recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         final UserAdapter adapter = new UserAdapter();
         recyclerView.setAdapter(adapter);
 
-        // Obteniendo lista de posts de Firebase (con realtime)
+
         DatabaseReference usuarios = FirebaseDatabase.getInstance().getReference("users");
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
                 Log.d(TAG, "onChildAdded " + dataSnapshot.getKey());
 
-                // Obteniendo nuevo post de Firebase
+
                 String postKey = dataSnapshot.getKey();
                 final User addUser = dataSnapshot.getValue(User.class);
                 Log.d(TAG, "addedPost " + addUser);
 
-                // Actualizando adapter datasource
+
                 List<User> users = adapter.getUsers();
                 users.add(0, addUser);
                 adapter.notifyDataSetChanged();
 
-                // ...
+
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
                 Log.d(TAG, "onChildChanged " + dataSnapshot.getKey());
 
-                // Obteniendo post modificado de Firebase
+
                 String postKey = dataSnapshot.getKey();
                 User user1 = dataSnapshot.getValue(User.class);
                 Log.d(TAG, "changedPost " + user1);
 
-                // Actualizando adapter datasource
+
                 List<User> users = adapter.getUsers();
-                int index = users.indexOf(user1); // Necesario implementar Post.equals()
+                int index = users.indexOf(user1);
                 if (index != -1) {
                     users.set(index, user1);
                 }
                 adapter.notifyDataSetChanged();
 
-                // ...
+
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onChildRemoved " + dataSnapshot.getKey());
 
-                // Obteniendo post eliminado de Firebase
+
                 String userKey = dataSnapshot.getKey();
                 User removedUser = dataSnapshot.getValue(User.class);
                 Log.d(TAG, "removedPost " + removedUser);
 
-                // Actualizando adapter datasource
+
                 List<User> users = adapter.getUsers();
-                users.remove(removedUser); // Necesario implementar Post.equals()
+                users.remove(removedUser);
                 adapter.notifyDataSetChanged();
 
-                // ...
+
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
                 Log.d(TAG, "onChildMoved " + dataSnapshot.getKey());
 
-                // A post has changed position, use the key to determine if we are
-                // displaying this post and if so move it.
+
                 User movedUser = dataSnapshot.getValue(User.class);
                 String UserKey = dataSnapshot.getKey();
 
